@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Break Timmer</title>
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Monoton&family=Boogaloo&family=Nanum+Pen+Script&display=swap');
+
+    body {
+        font-family: 'Boogaloo', cursive;
+    }
+
+    #micro {
+        font-size: 30px;
+    }
+
+    #mdot {
+        font-size: 30px;
+    }
+
+    #normal {
+        font-size: 25px;		
+		color: #90806b;
+    }
+	
+    #message {
+		font-family: 'Nanum Pen Script', 'Boogaloo', cursive;
+        font-size: 80px;
+		font-weight: 550;
+		color: green;
+    }	
+        
+    span {	
+        font-size: 120px;
+		color: #eb515a;
+		font-family: 'Boogaloo', cursive;
+    }
+	
+    p {
+        font-size: 50px;
+		color: #eb515a; // 1e6b7b
+    }
+
+    button {
+        background-color: whitesmoke;
+        color: rgb(17, 5, 5);
+        font-family: 'Boogaloo', cursive;
+
+    }
+	#bg {
+		width:1280px;
+		height:790px;
+		margin-top: 60px;
+		margin-left: 5px;
+		text-align:center;
+		background-image:url('https://cdn.pixabay.com/photo/2017/03/10/09/19/alarm-clock-2132276_1280.jpg');
+		background-repeat:no-repeat;
+		border-radius: 15px;
+        box-shadow: 0px 20px 35px rgba(0, 0, 0, 0.2);
+		position: relative;
+		z-index: 0;
+	}
+	
+	#outer {
+		width:100%;
+		height:800px;
+		justify-content: center;
+		display: flex;
+	}
+	
+	#watch {
+		width:400px;
+		margin-left: 152px;
+		margin-top: 290px;
+	}
+	
+	#messagediv {
+		width:650px;
+		left: 450px;
+		top: -250px;
+		position: relative;
+		z-index:2;
+		box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.);
+	}
+	
+	#copyright {
+		width:300px;
+		left: 1050px;
+		top:  15px;
+		position: relative;
+		z-index:3;
+		color:#A0A0A0;
+		font-family: 'Nanum Pen Script', 'Boogaloo', cursive;
+		font-size: 20pt;
+	}
+	
+	#buttons {
+		width:300px;
+		left: 195px;
+		top:  85px;
+		position: relative;
+		z-index:5;
+	}
+    	
+    input {
+        position: relative;
+        border: none;
+		width: 60px;
+		height: 13px;
+        display: inline-block;
+        padding: 10px 0px;
+        border-radius: 10px;
+        font-family: "paybooc-Light", sans-serif;
+        box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.1);
+        text-decoration: none;
+        font-weight: 700;
+        transition: 0.25s;
+		font-size: 30px;
+		text-align: center;	
+		color: red;
+    }
+	
+    .w-btn {
+        position: relative;
+        border: none;
+        display: inline-block;
+        padding: 1px 8px;
+        border-radius: 15px;
+        font-family: "paybooc-Light", sans-serif;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.01;
+		font-size: 14px;
+		height:24px;
+		width: 50px;
+		color: #000000;	
+		
+    }
+
+    .w-btn-indigo {
+        background-color: white;
+    }
+
+    .w-btn-green {
+        background-color: lightyellow; 
+    }
+
+</style>
+<body>
+
+	<div id="outer">
+		<div id="bg" style="margin-left:10px;">		
+			<div id="copyright">Neophiliano</div>	
+			<div id="buttons">
+			<br>
+				<div id="settime">
+					<span id="normal">&nbsp;&nbsp;Break Time </span><input id="initmin" type="text" value="10"><span id="normal"> min</span>
+				</div>
+				<button class="w-btn w-btn-green" id="start">start</button>
+				<button class="w-btn w-btn-indigo" id="stop">stop</button>
+				<button class="w-btn w-btn-indigo" id="clear">clear</button>
+			</div>
+			<div id="watch">
+				<span id="min">00</span>
+				<span id="dot">:</span>
+				<span id="sec">00</span>
+				<span id="mdot">.</span>
+				<span id="micro">00</span><br><br>				
+				<div id="messagediv"><p><span id="message">지금, 이 순간이 당신에게 가장 소중한 시간 입니다.</span><p></div>	
+			</div>
+		</div>	
+	</div>
+    <script>		
+		let flag = 0;
+		let eob = "";
+		let messages = ["시작하지 않으면, 아무것도 시작되지 않는다.<br><font size='9' color='gray'>-니체-</font>",
+						"세상에서 가장 행복한 사람은 감사하는 사람이다.<br><font size='9' color='gray'> -탈무드-</font>",
+						"승자는 시간을 관리하며 살고 폐자는 시간에 끌려산다.<br><font size='9' color='gray'> -J.하비스-</font>",
+						"미래는 현재 우리가 무엇을 하는가에 달려있다.<br><font size='9' color='gray'>-간디-</font>",
+						"인생의 차이는 여가시간에 달려 있다.<br><font size='9' color='gray'>-아인슈타인-</font>",
+						"시간과 열정을 들이지 않고 얻을 수 있는 일은 결코 없다.<br><font size='9' color='gray'> -그라시안-</font>",
+						"하루하루를 우리의 마지막 날인듯 보내야 한다.<br><font size='9' color='gray'> -푸블리우스 시루스-</font>",
+						"제일 바쁜 사람이 제일 많은 시간을 가진다.<br><font size='9' color='gray'> -비네-</font>",
+						"시간은 인간이 쓸 수 있는 가장 값진 것이다.<br><font size='9' color='gray'> -테오프라스토스-</font>",
+						"겨누지 않고 쏘면 100% 빗나간다.<br><font size='9' color='gray'> -웨인 크레츠키-</font>"
+						
+						];
+        window.onload = function(){
+            
+            let timer_sec;
+            let timer_min;
+            let timer_hour;
+            let timer_micro;
+
+            let timer = 0;
+			document.getElementById("stop").style.display="none";
+			document.getElementById("clear").style.display="none";
+
+            //click start button
+            document.getElementById("start").addEventListener("click", function(){
+                //console.log(timer);
+                if(timer > 0){
+                    return;
+                }
+				document.getElementById("start").style.display="none";
+				document.getElementById("stop").style.display="";
+				document.getElementById("settime").style.visibility="hidden";
+				
+				document.getElementById("message").innerHTML = messages[Math.floor(Math.random()*10)]; // "시작하지 않으면, 아무것도 시작되지 않는다.";
+                var micro = parseInt(document.getElementById("micro").innerText);
+                var sec = parseInt(document.getElementById("sec").innerText);
+					document.getElementById("sec").innerText = 60;
+				var initMin = parseInt(initmin.value);
+				//console.log("initMin = " + initMin);
+                var min = initMin; // parseInt(document.getElementById("min").innerText);
+					min--;
+					if(min < 10) document.getElementById("min").innerText = "0" + min;
+					else document.getElementById("min").innerText = min;				
+                //var hour = parseInt(document.getElementById("hour").innerText);
+
+                //start seconds
+                timer_micro = setInterval(function(){
+					if(document.getElementById("micro").innerText=="00") micro = 100;
+                    micro--;
+                    if(micro == 100) {
+                        micro = "00";
+                    } else if(micro < 10){
+                        micro = "0" + micro;
+                    }
+                    document.getElementById("micro").innerText = micro;
+                }, 10);
+
+                //start seconds
+                timer_sec = setInterval(function(){
+                    //console.log(i);
+                    //sec++;
+					if(sec == 0) sec = 60;			
+					sec--;
+                    if(sec == 60) {
+                        sec = "00";
+                    } else if(sec < 10){
+                        sec = "0" + sec;
+                    }
+                    document.getElementById("sec").innerText = sec;
+					//if(document.getElementById("dot").innerText==":") document.getElementById("dot").innerText = " ";
+					//else document.getElementById("dot").innerText = ":";
+					
+					var stopsign = parseInt(sec)+parseInt(min*60);
+					//console.log("stopsign=" + stopsign);
+					if(stopsign == 0) {
+						stop();
+						document.getElementById("micro").innerText = "00";
+						document.getElementById("sec").innerText = "00";
+						document.getElementById("min").innerText = "00";	
+						
+						document.getElementById("dot").innerText = ":";
+						//document.getElementById("message").innerText = "휴식 시간이 종료 되었습니다."
+						eob = setInterval(endofbreaktime,1000);								
+						document.getElementById("stop").style.display="none";
+						
+					}
+                }, 1000);
+				
+                //start minutes
+                timer_min = setInterval(function(){
+					if(min == 0 ) min = 60;
+					//console.log(min);
+					min--;
+					if(min == 60) {
+                        min = 0;
+                    } else if(min < 10){
+                        min = "0" + min;
+                    }
+
+                    document.getElementById("min").innerText = min;		
+					document.getElementById("message").innerHTML = messages[Math.floor(Math.random()*10)];					
+                }, 60000);
+
+                //start hours
+				/*
+                timer_hour = setInterval(function(){
+                    //console.log(hour);
+                    hour++;
+
+                    if(hour < 10){
+                        hour = "0" + hour;
+                    }
+
+                    document.getElementById("hour").innerText = hour;
+
+                }, 3600000);
+				*/
+                timer++;
+                //console.log(timer);
+            });
+
+            //click stop button
+            document.getElementById("stop").addEventListener("click", function(){
+                stop();
+            });
+
+            function stop(){  				
+				clearInterval(timer_micro);
+                clearInterval(timer_sec);
+                clearInterval(timer_min);
+                //clearInterval(timer_hour);
+								
+                timer--;
+                if(timer < 0) timer = 0;
+				
+				document.getElementById("message").innerText = "";
+				document.getElementById("clear").style.display="";
+				document.getElementById("stop").style.display="none";
+            }
+			
+            //click clear button
+            document.getElementById("clear").addEventListener("click", function(){
+                stop();
+                document.getElementById("micro").innerText = "00";
+                document.getElementById("sec").innerText = "00";
+                document.getElementById("min").innerText = "00";
+				              
+				clearInterval(eob);
+				flag = 0;
+				
+				initmin.value = 10;
+                //document.getElementById("hour").innerText = "00";
+				document.getElementById("start").style.display="";				
+				document.getElementById("clear").style.display="none";
+				document.getElementById("settime").style.visibility="visible";
+				document.getElementById("message").style.color="green";
+            });
+        }		
+	
+		function endofbreaktime() {
+			if(flag == 0) {				
+				document.getElementById("message").innerHTML = "행복한 하루 되세요^_^";
+				document.getElementById("message").style.color="red";
+				flag = 1;
+			} else {
+				document.getElementById("message").innerText = " ";
+				flag = 0;
+			}
+			//console.log("flag = " + flag);
+		}
+    </script>
+</body>
+</html>
